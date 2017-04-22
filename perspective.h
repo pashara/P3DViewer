@@ -22,8 +22,8 @@ public:
 	PointTo3D* _Original3Dot = NULL;
 
 
-	int SCREEN_WIDTH = 640;
-	int SCREEN_HEIGHT = 480;
+	int SCREEN_WIDTH = 800;
+	int SCREEN_HEIGHT = 600;
 
 	virtual void init(PointTo3D *a, PointTo3D*b, PointTo3D*c) = 0;
 	bool findNormals(PointTo3D p0, PointTo3D p1, PointTo3D p2) {

@@ -39,9 +39,9 @@ protected:
 	ZBuffer * zb;					// Z-ασττεπ
 	int Tx = 0;
 	int Ty = 0;
-	int Tz = 400;
-	double ugolY = -50;
-	double ugolZ = 10;
+	int Tz = -400;
+	double ugolY = 0;
+	double ugolZ = 0;
 	double ugolX = 0;
 	int perspective1 = 1;
 	double radius = 500;

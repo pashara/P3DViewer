@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->runButton, SIGNAL (released()),this, SLOT (startLoad_ButtonHandler()));
 
     ui->progressBar->setVisible(false);
+	this->startLoad_ButtonHandler();
 }
 
 MainWindow::~MainWindow()

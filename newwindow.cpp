@@ -6,6 +6,9 @@
 #include "perspective.h"
 #include "linearPerspective.h"
 #include "AffineTransformations.h"
+#include "3dloader.h"
+#include <fstream>
+
 
 
 
@@ -15,17 +18,22 @@
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
 
-NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)
-	: QWindow(parent)
-	, m_animating(false)
-	, m_context(0)
-	, m_device(0)
-{
+
+CLoad3DS g_Load3ds;             // Наш 3DS класс.
+t3DModel g_3DModel;
+
+
+NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)	: QWindow(parent), m_animating(false), m_context(0), m_device(0) {
+
 	zb = new ZBuffer(width(), height());
+	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
+
+
+
 	this->data = data;
 	std::string windowTitle = "Loaded: "+data->at(0).getTitle();
 
-	//g_Load3ds.Import3DS(&(g_3DModel), data->at(0).getPath());
+	g_Load3ds.Import3DS(&(g_3DModel), data->at(0).getPath());
 
 
 	setTitle(QString::fromStdString(windowTitle));
@@ -56,28 +64,43 @@ void NewWindow::render(QPainter *painter)
 	}
 	*/
 
-	//perspectiv = new linearPerspective(&g_3DModel, zb, radius);
-//	pCore::AffineTransformations *a = new pCore::AffineTransformations();
-//	pCore::matrix<>* MAT_1;
-//	MAT_1 = new pCore::matrix<>(4, 4);
-//	a->setT(this->Tx, this->Ty, this->Tz);
-//	a->setS(1.0, 1.0, 1.0);
-//	a->setRy(this->ugolY);
-//	a->setRz(this->ugolZ);
-//	a->setRx(this->ugolX);
-//	a->getResult(*MAT_1);
+
+	pCore::AffineTransformations *a = new pCore::AffineTransformations();
+	pCore::matrix<>* MAT_1;
 
 
-//	zb->Clear();
-
-
-//	perspectiv->setWorkMatrix(MAT_1);
-//	perspectiv->init(_Original1Dot, _Original2Dot, _Original3Dot);
+	MAT_1 = new pCore::matrix<>(4, 4);
+	a->setT(this->Tx, this->Ty, this->Tz);
+	a->setS(1.0, 1.0, 1.0);
+	a->setRy(this->ugolY);
+	a->setRz(this->ugolZ);
+	a->setRx(this->ugolX);
+	a->getResult(*MAT_1);
 
 	
+	ofstream log;
+	log.open("log.txt");
+	log << MAT_1;
+	log.close();
+
+
 	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
 	
+	for (int numObj = 0; numObj < g_3DModel.numOfObjects; numObj++) {
+		t3DObject *obj = &(g_3DModel.pObject[numObj]);
+		for (int i = 0; i < obj->numOfVerts; i++) {
+			QPoint dot(obj->pVerts[i].x + 100, obj->pVerts[i].y + 100);
+			imag.setPixel(dot, 5);
+		}
+	}
+
+
+
+
 	
+	
+	/*
+	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
 	for (int x = width()/4; x < width()*0.75; x++) {
 		for (int y = height()/4; y < height()*0.75; y++) {
 			asd++;
@@ -85,7 +108,7 @@ void NewWindow::render(QPainter *painter)
 
 			imag.setPixel(dot, asd);
 		}
-	}	
+	}	*/
 	painter->drawImage(QRect(0, 0, width(), height()), imag);
 	
 
