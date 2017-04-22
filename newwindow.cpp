@@ -27,8 +27,6 @@ t3DModel g_3DModel;
 NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)	: QWindow(parent), m_animating(false), m_context(0), m_device(0) {
 
 	
-	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
-
 
 
 	this->data = data;
@@ -79,42 +77,14 @@ void NewWindow::render(QPainter *painter)
 	a->getResult(*MAT_1);
 
 	zb->Clear();
-
-	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
+	//if (isInitPerspective == 0) {
+		perspectiv = new linearPerspective(&g_3DModel, zb, radius);
+		isInitPerspective = 1;
+	//}
 	perspectiv->setWorkMatrix(MAT_1);
 	perspectiv->init(_Original1Dot, _Original2Dot, _Original3Dot);
 
 	
-
-	/*ofstream log;
-	log.open("log.txt");
-	log << "Начало рисования" << endl;
-	for (int j = 0; j < zb->sY; j++) {
-		for (int i = 0; i < zb->sX; i++) {
-			//if (zb->buff[j][i].color != 3)
-				log << zb->buff[j][i].color << endl;
-		}
-		log << endl;
-	}
-	log << "Конец рисования" << endl;
-	
-	log.close();
-	*/
-
-	
-	/*// PUT MATRIX
-	pCore::matrix<> *DEBUGMAT_1 = MAT_1;
-	ofstream log;
-	log.open("log.txt");
-	log << setw(5) << DEBUGMAT_1->data[0][0] << " " << setw(5) << DEBUGMAT_1->data[0][1] << " " << setw(5) << DEBUGMAT_1->data[0][2] << " " << setw(5) << DEBUGMAT_1->data[0][3] << endl;
-	log << setw(5) << DEBUGMAT_1->data[1][0] << " " << setw(5) << DEBUGMAT_1->data[1][1] << " " << setw(5) << DEBUGMAT_1->data[1][2] << " " << setw(5) << DEBUGMAT_1->data[1][3] << endl;
-	log << setw(5) << DEBUGMAT_1->data[2][0] << " " << setw(5) << DEBUGMAT_1->data[2][1] << " " << setw(5) << DEBUGMAT_1->data[2][2] << " " << setw(5) << DEBUGMAT_1->data[2][3] << endl;
-	log << setw(5) << DEBUGMAT_1->data[3][0] << " " << setw(5) << DEBUGMAT_1->data[3][1] << " " << setw(5) << DEBUGMAT_1->data[3][2] << " " << setw(5) << DEBUGMAT_1->data[3][3] << endl;
-	log.close();
-	*/
-
-
-
 
 	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
 
@@ -129,38 +99,12 @@ void NewWindow::render(QPainter *painter)
 	}
 
 
-
-	/*
-	Output dots
-	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
-	
-	for (int numObj = 0; numObj < g_3DModel.numOfObjects; numObj++) {
-		t3DObject *obj = &(g_3DModel.pObject[numObj]);
-		for (int i = 0; i < obj->numOfVerts; i++) {
-			QPoint dot(obj->pVerts[i].x + 100, obj->pVerts[i].y + 100);
-			imag.setPixel(dot, 5);
-		}
-	}*/
-
-
-
-
-	
-	
-	/*
-	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
-	for (int x = width()/4; x < width()*0.75; x++) {
-		for (int y = height()/4; y < height()*0.75; y++) {
-			asd++;
-			QPoint dot(x, y);
-
-			imag.setPixel(dot, asd);
-		}
-	}	*/
 	painter->drawImage(QRect(0, 0, width(), height()), imag);
 	
-
-
+	delete perspectiv;
+	delete a;
+	delete MAT_1;
+	delete zb;
 
 	Q_UNUSED(painter);
 }
@@ -209,8 +153,9 @@ bool NewWindow::event(QEvent *event)
 		renderNow();
 		return true;
 	case QEvent::KeyPress:
+		ugolY+=5;
 		renderNow();
-		ke = (QKeyEvent *)event;
+		/*ke = (QKeyEvent *)event;
 		switch (ke->key()) {
 		case 16777235:		//Стрелка вверх
 			Ty--;
@@ -220,7 +165,7 @@ bool NewWindow::event(QEvent *event)
 			Tx++;
 		case 16777249:		//Стрелка стрелка влево
 			Tx--;
-		}
+		}*/
 		/*keyValue = ke->key();
 		
 		log.open("log.txt");

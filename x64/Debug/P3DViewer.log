@@ -1,9 +1,20 @@
-﻿  newwindow.cpp
+﻿  Moc'ing newwindow.h...
+  moc_newwindow.cpp
+c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+c:\users\admin\documents\p3dviewer\perspective.h(34): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(36): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(42): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
+  mainwindow.cpp
+c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+  newwindow.cpp
 c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
 c:\users\admin\documents\p3dviewer\perspective.h(34): warning C4244: =: преобразование "double" в "float", возможна потеря данных
 c:\users\admin\documents\p3dviewer\perspective.h(35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
 c:\users\admin\documents\p3dviewer\perspective.h(36): warning C4244: =: преобразование "double" в "float", возможна потеря данных
 c:\users\admin\documents\p3dviewer\perspective.h(42): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
 c:\users\admin\documents\p3dviewer\AffineTransformations.h(9): warning C4305: инициализация: усечение из "double" к "const float"
-newwindow.cpp(204): warning C4101: keyValue: неиспользованная локальная переменная
+newwindow.cpp(149): warning C4101: ke: неиспользованная локальная переменная
+newwindow.cpp(148): warning C4101: keyValue: неиспользованная локальная переменная
+  Создание кода...
   P3DViewer.vcxproj -> C:\Users\Admin\Documents\P3DViewer\debug\P3DViewer.exe

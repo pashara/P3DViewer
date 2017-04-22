@@ -34,12 +34,12 @@ protected:
 	int asd = 0;
 	std::vector<objectfile>* data;
 
-
+	int isInitPerspective = 0;
 
 	ZBuffer * zb;					// Z-ασττεπ
 	int Tx = 0;
 	int Ty = 0;
-	int Tz = 500;
+	int Tz = 600;
 	double ugolY = -45;
 	double ugolZ = 0;
 	double ugolX = 0;
