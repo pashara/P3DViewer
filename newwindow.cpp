@@ -8,7 +8,7 @@
 #include "AffineTransformations.h"
 #include "3dloader.h"
 #include <fstream>
-
+#include <iomanip> 
 
 
 
@@ -17,6 +17,7 @@
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
+#include <QKeyEvent>
 
 
 CLoad3DS g_Load3ds;             // Наш 3DS класс.
@@ -25,7 +26,7 @@ t3DModel g_3DModel;
 
 NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)	: QWindow(parent), m_animating(false), m_context(0), m_device(0) {
 
-	zb = new ZBuffer(width(), height());
+	
 	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
 
 
@@ -67,7 +68,7 @@ void NewWindow::render(QPainter *painter)
 
 	pCore::AffineTransformations *a = new pCore::AffineTransformations();
 	pCore::matrix<>* MAT_1;
-
+	zb = new ZBuffer(width(), height());
 
 	MAT_1 = new pCore::matrix<>(4, 4);
 	a->setT(this->Tx, this->Ty, this->Tz);
@@ -77,13 +78,60 @@ void NewWindow::render(QPainter *painter)
 	a->setRx(this->ugolX);
 	a->getResult(*MAT_1);
 
+	zb->Clear();
+
+	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
+	perspectiv->setWorkMatrix(MAT_1);
+	perspectiv->init(_Original1Dot, _Original2Dot, _Original3Dot);
+
 	
+
+	/*ofstream log;
+	log.open("log.txt");
+	log << "Начало рисования" << endl;
+	for (int j = 0; j < zb->sY; j++) {
+		for (int i = 0; i < zb->sX; i++) {
+			//if (zb->buff[j][i].color != 3)
+				log << zb->buff[j][i].color << endl;
+		}
+		log << endl;
+	}
+	log << "Конец рисования" << endl;
+	
+	log.close();
+	*/
+
+	
+	/*// PUT MATRIX
+	pCore::matrix<> *DEBUGMAT_1 = MAT_1;
 	ofstream log;
 	log.open("log.txt");
-	log << MAT_1;
+	log << setw(5) << DEBUGMAT_1->data[0][0] << " " << setw(5) << DEBUGMAT_1->data[0][1] << " " << setw(5) << DEBUGMAT_1->data[0][2] << " " << setw(5) << DEBUGMAT_1->data[0][3] << endl;
+	log << setw(5) << DEBUGMAT_1->data[1][0] << " " << setw(5) << DEBUGMAT_1->data[1][1] << " " << setw(5) << DEBUGMAT_1->data[1][2] << " " << setw(5) << DEBUGMAT_1->data[1][3] << endl;
+	log << setw(5) << DEBUGMAT_1->data[2][0] << " " << setw(5) << DEBUGMAT_1->data[2][1] << " " << setw(5) << DEBUGMAT_1->data[2][2] << " " << setw(5) << DEBUGMAT_1->data[2][3] << endl;
+	log << setw(5) << DEBUGMAT_1->data[3][0] << " " << setw(5) << DEBUGMAT_1->data[3][1] << " " << setw(5) << DEBUGMAT_1->data[3][2] << " " << setw(5) << DEBUGMAT_1->data[3][3] << endl;
 	log.close();
+	*/
 
 
+
+
+	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
+
+
+	for (int j = 0; j < zb->sY; j++) {
+		for (int i = 0; i < zb->sX; i++) {
+			if (zb->buff[j][i].color != 3) {
+				QPoint dot(i, j);
+				imag.setPixel(dot, zb->buff[j][i].color);
+			}
+		}
+	}
+
+
+
+	/*
+	Output dots
 	QImage imag(width(), height(), QImage::Format_ARGB32_Premultiplied);
 	
 	for (int numObj = 0; numObj < g_3DModel.numOfObjects; numObj++) {
@@ -92,7 +140,7 @@ void NewWindow::render(QPainter *painter)
 			QPoint dot(obj->pVerts[i].x + 100, obj->pVerts[i].y + 100);
 			imag.setPixel(dot, 5);
 		}
-	}
+	}*/
 
 
 
@@ -147,13 +195,44 @@ void NewWindow::renderLater()
 
 bool NewWindow::event(QEvent *event)
 {
-
+	/*
+	16777235 - arrow down
+	16777237 - arrow down
+	16777249 - arrow left
+	16777236 - arrow right
+	*/ 
+	int keyValue;
+	QKeyEvent *ke;
+	ofstream log;
 	switch (event->type()) {
 	case QEvent::UpdateRequest:
 		renderNow();
 		return true;
 	case QEvent::KeyPress:
 		renderNow();
+		ke = (QKeyEvent *)event;
+		switch (ke->key()) {
+		case 16777235:		//Стрелка вверх
+			Ty--;
+		case 16777237:		//Стрелка вниз
+			Ty++;
+		case 16777236:		//Стрелка вправо
+			Tx++;
+		case 16777249:		//Стрелка стрелка влево
+			Tx--;
+		}
+		/*keyValue = ke->key();
+		
+		log.open("log.txt");
+		log << "Начало рисования" << endl;
+		
+		log << keyValue << endl;
+
+		log << "Конец рисования" << endl;
+
+		log.close();*/
+
+		//setTitle(keyValue + ":");
 		return true;
 	default:
 		return QWindow::event(event);

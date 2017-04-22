@@ -1,39 +1,19 @@
-﻿  Moc'ing mainwindow.h...
-  Moc'ing newwindow.h...
-  3dloader.cpp
+﻿  Moc'ing newwindow.h...
+  moc_newwindow.cpp
 c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-3dloader.cpp(126): warning C4477: "sprintf": в строке форматирования "%s" требуется аргумент типа "char *", но вариативный аргумент "1" имеет тип "std::string"
-3dloader.cpp(140): warning C4477: "sprintf": в строке форматирования "%s" требуется аргумент типа "char *", но вариативный аргумент "1" имеет тип "std::string"
-3dloader.cpp(211): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(231): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(286): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(295): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(362): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(397): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(414): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(422): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(442): warning C4267: =: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(446): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(470): warning C4267: return: преобразование из "size_t" в "int"; возможна потеря данных
-3dloader.cpp(488): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(511): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(524): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(548): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(555): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(571): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(579): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-3dloader.cpp(653): warning C4267: +=: преобразование из "size_t" в "unsigned int"; возможна потеря данных
-  main.cpp
-c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+c:\users\admin\documents\p3dviewer\perspective.h(34): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(36): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(42): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
   mainwindow.cpp
 c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
   newwindow.cpp
 c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-  objectfile.cpp
-c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-  moc_mainwindow.cpp
-c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-  moc_newwindow.cpp
-c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+c:\users\admin\documents\p3dviewer\perspective.h(34): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(36): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(42): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\AffineTransformations.h(9): warning C4305: инициализация: усечение из "double" к "const float"
+newwindow.cpp(204): warning C4101: keyValue: неиспользованная локальная переменная
   Создание кода...
   P3DViewer.vcxproj -> C:\Users\Admin\Documents\P3DViewer\release\P3DViewer.exe

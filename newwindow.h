@@ -39,12 +39,12 @@ protected:
 	ZBuffer * zb;					// Z-ασττεπ
 	int Tx = 0;
 	int Ty = 0;
-	int Tz = -400;
-	double ugolY = 0;
+	int Tz = 500;
+	double ugolY = -45;
 	double ugolZ = 0;
 	double ugolX = 0;
 	int perspective1 = 1;
-	double radius = 500;
+	double radius = 1200;
 	perspective *perspectiv = NULL;
 	PointTo3D* _Original1Dot = NULL;
 	PointTo3D* _Original2Dot = NULL;

@@ -15,25 +15,13 @@ public:
 		_Original2Dot = b;
 		_Original3Dot = c;
 
-
-
 		t3DObject *obj;
 		for (int i = 0; i < 1; i++) {
-			if (this->dots.size() == 0) {
-				obj = &(g_3DModel->pObject[i]);
-				for (int i = 0; i < obj->numOfVerts; i++) {
-					PointTo3D dot(obj->pVerts[i].x, obj->pVerts[i].y, obj->pVerts[i].z);
-
-					this->dots.insert(this->dots.end(), dot);
-
-				}
-			}
-			else {
-				obj = &(g_3DModel->pObject[i]);
-				for (int i = 0; i < obj->numOfVerts; i++) {
-					PointTo3D dot(obj->pVerts[i].x, obj->pVerts[i].y, obj->pVerts[i].z);
-					this->dots.at(i) = dot;
-				}
+			
+			obj = &(g_3DModel->pObject[i]);
+			for (int i = 0; i < obj->numOfVerts; i++) {
+				PointTo3D dot(obj->pVerts[i].x, obj->pVerts[i].y, obj->pVerts[i].z);
+				this->dots.insert(this->dots.end(), dot);
 			}
 			calcAllDots();
 
@@ -46,11 +34,12 @@ public:
 			for (int i = 0; i < obj->numOfFaces; i++) {
 				Triangle t1(dots[obj->pFaces[i].vertIndex[0] + LastDot], dots[obj->pFaces[i].vertIndex[1] + LastDot], dots[obj->pFaces[i].vertIndex[2] + LastDot], 100 + 2 * i);
 
-				if (obj->numOfFaces < 20000)
+				t = true;
+				/*if (obj->numOfFaces < 20000)
 					t = true;
 				else
 					t = findNormals(dots[obj->pFaces[i].vertIndex[0] + LastDot], dots[obj->pFaces[i].vertIndex[1] + LastDot], dots[obj->pFaces[i].vertIndex[2] + LastDot]);
-
+				*/
 				if (t)
 				{
 					buffer->PutTriangle(t1, 1);
@@ -62,6 +51,8 @@ public:
 			LastDot += obj->numOfVerts;*/
 		}
 	}
+
+
 	linearPerspective(t3DModel *g_3DModel, ZBuffer * zb, int param) {
 		//this->triangles.reserve(obj->numOfFaces);
 		this->param = param;
