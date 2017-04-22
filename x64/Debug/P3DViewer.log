@@ -1,0 +1,8 @@
+﻿  newwindow.cpp
+c:\users\admin\documents\p3dviewer\objectfile.h(2): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+c:\users\admin\documents\p3dviewer\perspective.h(38): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(39): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(40): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\perspective.h(46): warning C4244: аргумент: преобразование "double" в "float", возможна потеря данных
+c:\users\admin\documents\p3dviewer\AffineTransformations.h(9): warning C4305: инициализация: усечение из "double" к "const float"
+  P3DViewer.vcxproj -> C:\Users\Admin\Documents\P3DViewer\debug\P3DViewer.exe
