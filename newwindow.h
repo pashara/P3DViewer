@@ -16,6 +16,7 @@ class NewWindow : public QWindow, protected QOpenGLFunctions
 {
 	Q_OBJECT
 public:
+	static void drawPart(int part, ZBuffer *zb, QImage* imag);
 	explicit NewWindow(std::vector<objectfile>* data, QWindow *parent = 0);
 	~NewWindow();
 
