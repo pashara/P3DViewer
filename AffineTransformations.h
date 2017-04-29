@@ -6,7 +6,7 @@
 #include "PCMatrix.h"
 namespace pCore {
 	class AffineTransformations {
-		const float pi = 3.141592;
+		float pi = 3.14159265358979323846;
 	public:
 		matrix<float>*T;
 		matrix<float>*Rx;

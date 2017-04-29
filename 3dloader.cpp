@@ -1,6 +1,34 @@
 #include "3dloader.h"
-#include "includes.h"
+#include <iostream>
+using namespace std;
 
+
+
+//>------ Главный Chunk, в начале каждого 3ds-файла
+#define PRIMARY       0x4D4D
+
+//>------ Главнык Chunk-и
+#define OBJECTINFO    0x3D3D            // Это предоставляет версию меша перед информацией об обьекте
+#define VERSION       0x0002            // Предоставляет версию .3ds файла
+#define EDITKEYFRAME  0xB000            // Хидер для всей информации о кадрах
+
+//>------ под-дефайны OBJECTINFO
+#define MATERIAL      0xAFFF        // Информация о текстурах
+#define OBJECT        0x4000        // Полигоны, вершины, и т.д...
+
+//>------ под-дефайны для MATERIAL
+#define MATNAME       0xA000            // Название материала
+#define MATDIFFUSE    0xA020            // Хранит цвет обьекта/материала
+#define MATMAP        0xA200            // Хидер для нового материала
+#define MATMAPFILE    0xA300            // Хранит имя файла текстуры
+
+#define OBJECT_MESH   0x4100            // Даёт нам знать, что начинаем считывать новый обьект
+
+//>------ под-дефайны для OBJECT_MESH
+#define OBJECT_VERTICES     0x4110      // Вершины обьекта
+#define OBJECT_FACES        0x4120      // Полигоны обьекта
+#define OBJECT_MATERIAL     0x4130      // Дефайн находится, если обьект имеет материал, иначе цвет/текстура
+#define OBJECT_UV       0x4140      // UV текстурные координаты
 
 
 
@@ -37,7 +65,7 @@ int gBuffer[50000] = { 0 };   // Используется для чтения нежелательных данных
 
 CLoad3DS::CLoad3DS()
 {
-	m_FilePointer = NULL;
+	//m_FilePointer = NULL;
 }
 
 ///////////////////////////////// IMPORT 3DS \\\\\\\\\\\\\\\\*
@@ -52,10 +80,11 @@ bool CLoad3DS::Import3DS(t3DModel *pModel, std::string strFileName)
 	tChunk currentChunk = { 0 };
 
 	// Открываем .3ds файл
-	m_FilePointer = fopen(strFileName.c_str(), "rb");
+	//m_FilePointer = fopen(strFileName.c_str(), "rb");
+	file.open(strFileName.c_str(), ios::in | ios::binary);
 
 	// Убедимся, что указатель на файл верен (мы открыли файл)
-	if (!m_FilePointer)
+	if (!file)
 	{
 		sprintf(strMessage, "Unable to find the file: %s!", strFileName);
 		//MessageBox(NULL, strMessage, "Error", MB_OK);
@@ -98,10 +127,12 @@ bool CLoad3DS::Import3DS(t3DModel *pModel, std::string strFileName)
 
 void CLoad3DS::CleanUp()
 {
-	if (m_FilePointer) {
-		fclose(m_FilePointer);  // Закрываем файл
-		m_FilePointer = NULL;
-	}
+	/*if (m_FilePointer) {
+	fclose(m_FilePointer);  // Закрываем файл
+	m_FilePointer = NULL;
+	}*/
+	if (file.is_open())
+		file.close();
 }
 
 
@@ -137,8 +168,9 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 		case VERSION:           // Версия файла
 
 								// Читаем версию файла и добавляем прочитанные байты в переменную bytesRead
-			currentChunk.bytesRead += fread(gBuffer, 1, currentChunk.length -
-				currentChunk.bytesRead, m_FilePointer);
+								//fread(gBuffer, 1, currentChunk.length -	currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 
 			// Если версия файла больше 3, выведем предупреждение, что могут
 			// возникнуть проблемы.
@@ -157,8 +189,9 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 			ReadChunk(&tempChunk);
 
 			// Получаем версию меша
-			tempChunk.bytesRead += fread(gBuffer, 1, tempChunk.length -
-				tempChunk.bytesRead, m_FilePointer);
+			//fread(gBuffer, 1, tempChunk.length - tempChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), tempChunk.length - tempChunk.bytesRead);
+			tempChunk.bytesRead += tempChunk.length - tempChunk.bytesRead;
 
 			// Увеличиваем bytesRead на число прочитанных байт
 			currentChunk.bytesRead += tempChunk.bytesRead;
@@ -193,6 +226,7 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 			// Добавляем новый элемент tObject к списку обьектов
 			pModel->pObject.push_back(newObject);
 
+			//pModel->pObject[pModel->numOfObjects - 1] = { 0 };
 			// Инициализируем обьект и все его данные
 			memset(&(pModel->pObject[pModel->numOfObjects - 1]), 0, sizeof(t3DObject));
 
@@ -212,8 +246,9 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 			//ProcessNextKeyFrameChunk(pModel, currentChunk);
 
 			// Читаем в "мусорный" контейнер ненужные данные и увеличиваем счетчик
-			currentChunk.bytesRead += fread(gBuffer, 1, currentChunk.length -
-				currentChunk.bytesRead, m_FilePointer);
+			//fread(gBuffer, 1, currentChunk.length -	currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 			break;
 
 		default:
@@ -221,8 +256,9 @@ void CLoad3DS::ProcessNextChunk(t3DModel *pModel, tChunk *pPreviousChunk)
 			// Остальные chunk-и, которые нам не нужны, будут обработаны здесь. Нам
 			// всё ещё нужно прочитать в "мусорную" переменную неизвестные или игнорируемые
 			// chunk-и и увеличить счетчик прочитанных байт.
-			currentChunk.bytesRead += fread(gBuffer, 1, currentChunk.length -
-				currentChunk.bytesRead, m_FilePointer);
+			//fread(gBuffer, 1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 			break;
 		}
 
@@ -288,8 +324,9 @@ void CLoad3DS::ProcessNextObjectChunk(t3DModel *pModel, t3DObject *pObject, tChu
 
 			// Read past the ignored or unknown chunks
 			// Читаем игнорируемые/неизвестные данные в "мусорный" массив
-			currentChunk.bytesRead += fread(gBuffer, 1, currentChunk.length
-				- currentChunk.bytesRead, m_FilePointer);
+			//fread(gBuffer, 1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 			break;
 		}
 
@@ -322,9 +359,9 @@ void CLoad3DS::ProcessNextMaterialChunk(t3DModel *pModel, tChunk *pPreviousChunk
 		case MATNAME:       // Эта секция хранит имя материала
 
 							// читаем имя материала
-			currentChunk.bytesRead +=
-				fread(pModel->pMaterials[pModel->numOfMaterials - 1].strName,
-					1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+							//fread(pModel->pMaterials[pModel->numOfMaterials - 1].strName, 1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(pModel->pMaterials[pModel->numOfMaterials - 1].strName), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 			break;
 
 		case MATDIFFUSE:        // Хранит RGB-цвет обьекта
@@ -340,16 +377,18 @@ void CLoad3DS::ProcessNextMaterialChunk(t3DModel *pModel, tChunk *pPreviousChunk
 		case MATMAPFILE:        // Хранит имя файла материала
 
 								// Читаем имя файла материала
-			currentChunk.bytesRead += fread(pModel->pMaterials[pModel->numOfMaterials - 1].strFile,
-				1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+								//fread(pModel->pMaterials[pModel->numOfMaterials - 1].strFile,1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(pModel->pMaterials[pModel->numOfMaterials - 1].strFile), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
 			break;
 
 		default:
 
 			// Читаем остальные данные в "мусор"
-			currentChunk.bytesRead += fread(gBuffer, 1,
-				currentChunk.length - currentChunk.bytesRead,
-				m_FilePointer);
+			//fread(gBuffer, 1, currentChunk.length - currentChunk.bytesRead, m_FilePointer);
+			file.read((char*)(gBuffer), currentChunk.length - currentChunk.bytesRead);
+			currentChunk.bytesRead += currentChunk.length - currentChunk.bytesRead;
+
 			break;
 		}
 
@@ -369,11 +408,14 @@ void CLoad3DS::ReadChunk(tChunk *pChunk)
 	// Функция читает ID секции (2 байта).
 	// ID chunk-а - это, например, OBJECT/MATERIAL. Это говорит нам,
 	// какие данные могут быть прочитаны в этой секции.
-	pChunk->bytesRead = fread(&pChunk->ID, 1, 2, m_FilePointer);
-
+	//fread(&pChunk->ID, 1, 2, m_FilePointer);
+	file.read((char*)&(pChunk->ID), 2);
+	pChunk->bytesRead = 2;
 	// Затем читаем длинну секции (4 байта). Теперь мы знаем,
 	// сколько данных нам нужно будет прочитать.
-	pChunk->bytesRead += fread(&pChunk->length, 1, 4, m_FilePointer);
+	//fread(&pChunk->length, 1, 4, m_FilePointer);
+	file.read((char*)&(pChunk->length), 4);
+	pChunk->bytesRead += 4;
 }
 
 ///////////////////////////////// GET STRING \\\\\\\\\\\\\\\\*
@@ -387,13 +429,14 @@ int CLoad3DS::GetString(char *pBuffer)
 	int index = 0;
 
 	// Читаем 1 байт данных, первую букву строки
-	fread(pBuffer, 1, 1, m_FilePointer);
-
+	//fread(pBuffer, 1, 1, m_FilePointer);
+	file.read((char*)(pBuffer), 1);
 	// Цикл, пока не получаем NULL
 	while (*(pBuffer + index++) != 0) {
 
 		// Читаем символы всё время, пока не получим NULL
-		fread(pBuffer + index, 1, 1, m_FilePointer);
+		//fread(pBuffer + index, 1, 1, m_FilePointer);
+		file.read((char*)(pBuffer + index), 1);
 	}
 
 	// Вернём длинну строки, т.е. сколько байтов мы прочитали (включая NULL)
@@ -415,7 +458,9 @@ void CLoad3DS::ReadColorChunk(tMaterialInfo *pMaterial, tChunk *pChunk)
 	ReadChunk(&tempChunk);
 
 	// Читаем RGB-цвет (3 байта - от 0 до 255)
-	tempChunk.bytesRead += fread(pMaterial->color, 1, tempChunk.length - tempChunk.bytesRead, m_FilePointer);
+	//fread(pMaterial->color, 1, tempChunk.length - tempChunk.bytesRead, m_FilePointer);
+	file.read((char*)(pMaterial->color), tempChunk.length - tempChunk.bytesRead);
+	tempChunk.bytesRead += tempChunk.length - tempChunk.bytesRead;
 
 	// Увеличиваем счетчик
 	pChunk->bytesRead += tempChunk.bytesRead;
@@ -438,7 +483,9 @@ void CLoad3DS::ReadVertexIndices(t3DObject *pObject, tChunk *pPreviousChunk)
 									// для 3DS Max, которое ничего для нас не значит.
 
 									// Читаем число полигонов этого обьекта
-	pPreviousChunk->bytesRead += fread(&pObject->numOfFaces, 1, 2, m_FilePointer);
+									//fread(&pObject->numOfFaces, 1, 2, m_FilePointer);
+	file.read((char*)&(pObject->numOfFaces), 2);
+	pPreviousChunk->bytesRead += 2;
 
 	// Выделяем достаточно памяти для полигонов и инициализируем структуру
 	pObject->pFaces = new tFace[pObject->numOfFaces];
@@ -451,7 +498,9 @@ void CLoad3DS::ReadVertexIndices(t3DObject *pObject, tChunk *pPreviousChunk)
 		for (int j = 0; j < 4; j++)
 		{
 			// Читаем первый индекс вершины для текущего полигона
-			pPreviousChunk->bytesRead += fread(&index, 1, sizeof(index), m_FilePointer);
+			//fread(&index, 1, sizeof(index), m_FilePointer);
+			file.read((char*)&(index), sizeof(index));
+			pPreviousChunk->bytesRead += sizeof(index);
 
 			if (j < 3)
 			{
@@ -475,14 +524,17 @@ void CLoad3DS::ReadUVCoordinates(t3DObject *pObject, tChunk *pPreviousChunk)
 	// прочитать их полное количество, потом уже их самих.
 
 	// Читаем число UV-координат
-	pPreviousChunk->bytesRead += fread(&pObject->numTexVertex, 1, 2, m_FilePointer);
+	//fread(&pObject->numTexVertex, 1, 2, m_FilePointer);
+	file.read((char*)&(pObject->numTexVertex), 2);
+	pPreviousChunk->bytesRead += 2;
 
 	// Выделяем память для хранения UV-координат
 	pObject->pTexVerts = new CVector2[pObject->numTexVertex];
 
 	// Читаем текстурные координаты (массив из 2х float)
-	pPreviousChunk->bytesRead += fread(pObject->pTexVerts, 1,
-		pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	//fread(pObject->pTexVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	file.read((char*)(pObject->pTexVerts), pPreviousChunk->length - pPreviousChunk->bytesRead);
+	pPreviousChunk->bytesRead += pPreviousChunk->length - pPreviousChunk->bytesRead;
 }
 
 
@@ -498,15 +550,18 @@ void CLoad3DS::ReadVertices(t3DObject *pObject, tChunk *pPreviousChunk)
 	// нужно найти их количество.
 
 	// Читаем число вершин
-	pPreviousChunk->bytesRead += fread(&(pObject->numOfVerts), 1, 2, m_FilePointer);
+	//fread(&(pObject->numOfVerts), 1, 2, m_FilePointer);
+	file.read((char*)&(pObject->numOfVerts), 2);
+	pPreviousChunk->bytesRead += 2;
 
 	// Выделяем память для вершин и инициализируем структуру
 	pObject->pVerts = new CVector3[pObject->numOfVerts];
 	memset(pObject->pVerts, 0, sizeof(CVector3) * pObject->numOfVerts);
 
 	// Читаем в массив вершин (массив из 3 float)
-	pPreviousChunk->bytesRead += fread(pObject->pVerts, 1,
-		pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	//fread(pObject->pVerts, 1, pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	file.read((char*)(pObject->pVerts), pPreviousChunk->length - pPreviousChunk->bytesRead);
+	pPreviousChunk->bytesRead += pPreviousChunk->length - pPreviousChunk->bytesRead;
 
 	// Теперь все вершины прочитаны. Так как в моделях 3DS Max всегда перевёрнуты
 	// оси, нужно поменять Y-значения и Z-значения наших вершин.
@@ -579,8 +634,9 @@ void CLoad3DS::ReadObjectMaterial(t3DModel *pModel, t3DObject *pObject, tChunk *
 	}
 
 	// Остальное читаем в "мусор"
-	pPreviousChunk->bytesRead += fread(gBuffer, 1,
-		pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	//fread(gBuffer, 1,pPreviousChunk->length - pPreviousChunk->bytesRead, m_FilePointer);
+	file.read((char*)(gBuffer), pPreviousChunk->length - pPreviousChunk->bytesRead);
+	pPreviousChunk->bytesRead += pPreviousChunk->length - pPreviousChunk->bytesRead;
 }
 
 // *Note*

@@ -16,40 +16,43 @@ public:
 		_Original3Dot = c;
 
 		t3DObject *obj;
-		for (int i = 0; i < 1; i++) {
-			
-			obj = &(g_3DModel->pObject[i]);
+		LastTriangle = 0;
+		vector<int> LastDot;
+		LastDot.reserve(g_3DModel->numOfObjects);
+		int prevVal = 0;
+
+		for (int j = 0; j < g_3DModel->numOfObjects; j++) {
+			obj = &(g_3DModel->pObject[j]);
 			for (int i = 0; i < obj->numOfVerts; i++) {
 				PointTo3D dot(obj->pVerts[i].x, obj->pVerts[i].y, obj->pVerts[i].z);
 				this->dots.insert(this->dots.end(), dot);
+				//cout << obj->pVerts[i].x << " " << obj->pVerts[i].y << " " << obj->pVerts[i].z << endl;
 			}
-			calcAllDots();
 
+			LastDot.insert(LastDot.end(), prevVal);
+			prevVal+= obj->numOfVerts;
+		}
 
+		calcAllDots();
 
-
-
-
+		for (int j = 0; j < g_3DModel->numOfObjects; j++) {
+			obj = &(g_3DModel->pObject[j]);
 			bool t;
 			for (int i = 0; i < obj->numOfFaces; i++) {
-				Triangle t1(dots[obj->pFaces[i].vertIndex[0] + LastDot], dots[obj->pFaces[i].vertIndex[1] + LastDot], dots[obj->pFaces[i].vertIndex[2] + LastDot], 100 + 2 * i);
+				
+				Triangle t1(dots[obj->pFaces[i].vertIndex[0] + LastDot[j]], dots[obj->pFaces[i].vertIndex[1] + LastDot[j]], dots[obj->pFaces[i].vertIndex[2] + LastDot[j]], 100 + 2 * i);
 
 				t = true;
-				/*if (obj->numOfFaces < 20000)
-					t = true;
-				else
-					t = findNormals(dots[obj->pFaces[i].vertIndex[0] + LastDot], dots[obj->pFaces[i].vertIndex[1] + LastDot], dots[obj->pFaces[i].vertIndex[2] + LastDot]);
-				*/
+				//t = findNormals(dots[obj->pFaces[i].vertIndex[0] + LastDot], dots[obj->pFaces[i].vertIndex[1] + LastDot], dots[obj->pFaces[i].vertIndex[2] + LastDot]);
 				if (t)
 				{
 					buffer->PutTriangle(t1, 1);
 					triangles.insert(this->triangles.end(), t1);
 				}
 			}
-			/*
-			LastTriangle += obj->numOfFaces;
-			LastDot += obj->numOfVerts;*/
 		}
+
+
 	}
 
 

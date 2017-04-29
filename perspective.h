@@ -23,7 +23,7 @@ public:
 
 	virtual void init(PointTo3D *a, PointTo3D*b, PointTo3D*c) = 0;
 	bool findNormals(PointTo3D p0, PointTo3D p1, PointTo3D p2) {
-		double A[3], B[3];
+		float A[3], B[3];
 		A[0] = p1.x - p0.x;
 		B[0] = p2.x - p0.x;
 		A[1] = p1.y - p0.y;
@@ -46,12 +46,8 @@ public:
 
 	/*ѕробегаемс€ по всем точкам и преобразовываем их в нужную перспективу*/
 	void calcAllDots() {
-		ofstream log;
-		log.open("log.txt");
+		
 		for (int i = 0; i < this->dots.size(); i++) {
-
-			//calc(&this->dots[i]);
-
 			float X, Y, Z;
 
 			X = MAT_1->data[0][0] * this->dots[i].x + MAT_1->data[0][1] * this->dots[i].y + MAT_1->data[0][2] * this->dots[i].z + MAT_1->data[0][3];
@@ -60,33 +56,9 @@ public:
 			this->dots[i].x = X;
 			this->dots[i].y = Y;
 			this->dots[i].z = Z;
-			///doos[i] = this->dots[i];
-			//doos->at(i) = this->dots[i];
 			this->inPerspective(&(this->dots[i]));
-			log << this->dots[i].x << "  " << this->dots[i].y << "  " << this->dots[i].z << endl;
 		}
-		
-		log << " онец рисовани€" << endl;
-
-		log.close();
-
 		return;
-
-
-		double BADD[3][3];
-		BADD[0][0] = this->dots.at(0).x - this->dots.at(1).x;
-		BADD[1][0] = this->dots.at(1).x - this->dots.at(2).x;
-		BADD[2][0] = this->dots.at(2).x - this->dots.at(0).x;
-
-		BADD[0][1] = this->dots.at(0).y - this->dots.at(1).y;
-		BADD[1][1] = this->dots.at(1).y - this->dots.at(2).y;
-		BADD[2][1] = this->dots.at(2).y - this->dots.at(0).y;
-
-		BADD[0][2] = this->dots.at(0).z - this->dots.at(1).z;
-		BADD[1][2] = this->dots.at(1).z - this->dots.at(2).z;
-		BADD[2][2] = this->dots.at(2).z - this->dots.at(0).z;
-
-
 	}
 
 

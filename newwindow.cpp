@@ -22,14 +22,9 @@
 #include <QKeyEvent>
 
 
-CLoad3DS g_Load3ds;             // Наш 3DS класс.
-t3DModel g_3DModel;
 
 
 NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)	: QWindow(parent), m_animating(false), m_context(0), m_device(0) {
-
-	
-
 
 	this->data = data;
 	std::string windowTitle = "Loaded: "+data->at(0).getTitle();
@@ -39,6 +34,9 @@ NewWindow::NewWindow(std::vector<objectfile>* data,QWindow *parent)	: QWindow(pa
 
 	setTitle(QString::fromStdString(windowTitle));
 	setSurfaceType(QWindow::OpenGLSurface);
+	setPosition(100, 100);
+	setWidth(800);
+	setHeight(600);
 }
 
 NewWindow::~NewWindow()
@@ -64,42 +62,27 @@ void NewWindow::render(QPainter *painter)
 	perspectiv = new linearPerspective(&g_3DModel, zb, radius);
 	isInitPerspective = 1;
 	perspectiv->setWorkMatrix(MAT_1);
-	perspectiv->init(_Original1Dot, _Original2Dot, _Original3Dot);
 
-	
+	system("cls");
+	long t;
+	t = clock();
+	perspectiv->init(_Original1Dot, _Original2Dot, _Original3Dot);
+	t = clock() - t;
+	cout <<"Time of calculus all dots:"<< t << endl;
 
 	QImage *imag = new QImage (width(), height(), QImage::Format_ARGB32_Premultiplied);
 
-	int ii = 1;
-	if (ii == 1) {
-		std::thread thr0(drawPart, 0, std::ref(zb), std::ref(imag));
-		thr0.join();
-		std::thread thr1(drawPart, 1, std::ref(zb), std::ref(imag));
-		thr1.join();
-		std::thread thr2(drawPart, 2, std::ref(zb), std::ref(imag));
-		thr2.join();
-		std::thread thr3(drawPart, 3, std::ref(zb), std::ref(imag));
-		thr3.join();
-	} else if(ii == 2) {
-		drawPart(0, zb, imag);
-		drawPart(1, zb, imag);
-		drawPart(2, zb, imag);
-		drawPart(3, zb, imag);
-	}else{
-		for (int j = 0; j < zb->sY; j++) {
-			for (int i = 0; i < zb->sX; i++) {
-				//if (zb->buff[j][i].color != 3) {
-					QPoint dot(i, j);
-					imag->setPixel(dot, zb->buff[j][i].color);
-				//}
-			}
-		}
-	}
-
-
+	std::thread thr0(drawPart, 0, std::ref(zb), std::ref(imag));
+	thr0.join();
+	std::thread thr1(drawPart, 1, std::ref(zb), std::ref(imag));
+	thr1.join();
+	std::thread thr2(drawPart, 2, std::ref(zb), std::ref(imag));
+	thr2.join();
+	std::thread thr3(drawPart, 3, std::ref(zb), std::ref(imag));
+	thr3.join();
 
 	painter->drawImage(QRect(0, 0, width(), height()), *imag);
-	
+
 	delete perspectiv;
 	delete a;
 	delete MAT_1;
@@ -169,9 +152,7 @@ void NewWindow::render()
 		m_device = new QOpenGLPaintDevice;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	setPosition(100,100);
-	setWidth(800);
-	setHeight(600);
+
 	m_device->setSize(size());
 
 

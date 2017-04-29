@@ -5,7 +5,7 @@
 #include <QStringList>
 #include "includes.h"
 #include <QMessageBox>
-
+//#include "viewInterface.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->runButton, SIGNAL (released()),this, SLOT (startLoad_ButtonHandler()));
 
     ui->progressBar->setVisible(false);
+
+
+	/*ViewInterface* interfaceWindow = new ViewInterface(); // Be sure to destroy you window somewhere
+	interfaceWindow->show();*/
 	//this->startLoad_ButtonHandler();
 }
 
@@ -59,7 +63,9 @@ void MainWindow::startLoad_ButtonHandler()
     this->hide();
 
 
-	objectfile insertedFile("c://123//asd.3ds", "Mamonth");
+	
+
+	objectfile insertedFile("c://123//bigSphereX4.3DS", "bigSphere");
 	data->insert(data->end(), insertedFile);
 
 

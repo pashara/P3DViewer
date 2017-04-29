@@ -51,17 +51,11 @@
     <Filter Include="Header Files\perspectives">
       <UniqueIdentifier>{90f71896-5e62-450c-8baa-caa199b7c8b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{20f64d78-ffd2-4359-b09a-21a416ccac70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="newwindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Debug\moc_mainwindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -82,6 +76,15 @@
     </ClCompile>
     <ClCompile Include="zbuffer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="newwindow.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

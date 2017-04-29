@@ -53,6 +53,10 @@ protected:
 
 
 
+	CLoad3DS g_Load3ds;             // Наш 3DS класс.
+	t3DModel g_3DModel = {0};
+
+
 	bool event(QEvent *event) override;
 	void init();
 
